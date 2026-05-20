@@ -32,6 +32,9 @@ async function run() {
     
 const db =client.db('studyNook')
 const addRoomsCollection=db.collection('addRooms')
+const bookingCollection=db.collection('bookings')
+
+
 
 app.get('/addroom',async(req,res)=>{
   
@@ -55,6 +58,12 @@ app.get('/room/:id',async(req,res)=>{
 const {id}=req.params 
 const result =await addRoomsCollection.findOne({_id:new ObjectId(id)})
   res.json(result)
+})
+app.post('/bookings',async(req,res)=>{
+  const bookingData=req.body;
+  const result=await bookingCollection.insertOne(bookingData)
+  res.json(result)  
+
 })
 
 

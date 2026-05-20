@@ -62,8 +62,8 @@ const result =await addRoomsCollection.findOne({_id:new ObjectId(id)})
 app.post('/bookings',async(req,res)=>{
   const bookingData=req.body;
   const result=await bookingCollection.insertOne(bookingData)
-  res.json(result)  
-
+  
+res.json(result);
 })
 
 

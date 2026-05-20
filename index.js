@@ -5,7 +5,7 @@ dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const express = require('express')
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 
@@ -51,6 +51,11 @@ app.post('/addroom',async(req,res)=>{
   res.json(result)
 })
 
+app.get('/room/:id',async(req,res)=>{
+const {id}=req.params 
+const result =await addRoomsCollection.findOne({_id:new ObjectId(id)})
+  res.json(result)
+})
 
 
     await client.db("admin").command({ ping: 1 });

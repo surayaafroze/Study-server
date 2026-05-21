@@ -67,6 +67,15 @@ app.get('/bookings',async(req,res)=>{
   res.json(result)
 })
 
+app.delete('/bookings/:bookingsId',async(req,res)=>{
+
+//   const {bookingsId}=req.params;
+//   const result= await bookingCollection.deleteOne({
+//     _id: new ObjectId(bookingsId)
+//   })
+//   res.json(result)
+// })
+
 app.post('/bookings',async(req,res)=>{
   const bookingData=req.body;
   const result=await bookingCollection.insertOne(bookingData)

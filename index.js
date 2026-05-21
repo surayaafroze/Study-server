@@ -61,20 +61,23 @@ const result =await addRoomsCollection.findOne({_id:new ObjectId(id)})
 })
 
 
-app.get('/bookings',async(req,res)=>{
-  const {userId}=req.params
-  const result=await addRoomsCollection.find({userId:userId}).toArray();
-  res.json(result)
-})
+app.get('/bookings/:userId', async (req, res) => {
+  const { userId } = req.params;
 
+  const result = await bookingCollection
+    .find({ userId: userId })
+    .toArray();
+
+  res.json(result);
+});
 app.delete('/bookings/:bookingsId',async(req,res)=>{
 
-//   const {bookingsId}=req.params;
-//   const result= await bookingCollection.deleteOne({
-//     _id: new ObjectId(bookingsId)
-//   })
-//   res.json(result)
-// })
+  const {bookingsId}=req.params;
+  const result= await bookingCollection.deleteOne({
+    _id: new ObjectId(bookingsId)
+  })
+  res.json(result)
+})
 
 app.post('/bookings',async(req,res)=>{
   const bookingData=req.body;

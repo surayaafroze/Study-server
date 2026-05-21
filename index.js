@@ -59,6 +59,14 @@ const {id}=req.params
 const result =await addRoomsCollection.findOne({_id:new ObjectId(id)})
   res.json(result)
 })
+
+
+app.get('/bookings',async(req,res)=>{
+  const {userId}=req.params
+  const result=await addRoomsCollection.find({userId:userId}).toArray();
+  res.json(result)
+})
+
 app.post('/bookings',async(req,res)=>{
   const bookingData=req.body;
   const result=await bookingCollection.insertOne(bookingData)

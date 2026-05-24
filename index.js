@@ -99,6 +99,7 @@ const verifyToken = async (req, res, next) => {
       id: payload.sub,
       email: payload.email,
     };
+    // console.log(payload.id,'payload')
     next();
   } catch (error) {
     return res.status(403).json({ message: "Forbidden" });
@@ -176,17 +177,23 @@ app.get("/room/latest", async (_req, res) => {
 });
 
 /* ── MY ROOMS – PROTECTED ── */
-app.get("/my-rooms", async (req, res) => {
+/* ── MY ROOMS – PROTECTED ── */
+app.get("/my-rooms", verifyToken, async (req, res) => {
   try {
-    const userId = getUserId(req);
-    const rooms = await roomsCollection.find({ userId }).toArray();
-    res.json(rooms);
+    const userId = req.user.id;
+    console.log("🔍 Logged in userId:", userId); // এটা কী আসছে?
+    
+    const rooms = await roomsCollection
+      .find({ userId })
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    console.log("🔍 Rooms found:", rooms.length);
+    res.json({ success: true, data: rooms });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
-
 /* ── ROOM DETAILS – PROTECTED ──
    MUST come AFTER /room/latest */
 app.get("/room/:id", verifyToken, async (req, res) => {
@@ -290,6 +297,7 @@ app.delete("/room/:id", verifyToken, async (req, res) => {
 app.get("/bookings/my", verifyToken, async (req, res) => {
   try {
     const userId = getUserId(req);
+     console.log("bookings/my userId:", userId);
     const bookings = await bookingCollection
       .aggregate([
         { $match: { userId } },
@@ -308,10 +316,11 @@ app.get("/bookings/my", verifyToken, async (req, res) => {
             as: "room",
           },
         },
-        { $unwind: { path: "$room", preserveNullAndEmpty: true } },
+      { $unwind: { path: "$room", preserveNullAndEmptyArrays: true } },
         { $sort: { createdAt: -1 } },
       ])
       .toArray();
+      console.log("bookings found:", bookings.length);
     res.json(bookings);
   } catch (err) {
     console.error(err);
